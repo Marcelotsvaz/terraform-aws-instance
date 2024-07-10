@@ -11,7 +11,7 @@ variable prefix {
 	type = string
 	
 	validation {
-		condition = length( regexall( "[a-z0-9_]+", var.prefix ) ) > 0
-		error_message = "Can use only lower case letters, numbers and underscores."
+		condition = length( regexall( "^[a-z0-9_-]+$", var.prefix ) ) > 0
+		error_message = "`prefix` should contain only lower case letters, numbers, hyphens and underscores."
 	}
 }
