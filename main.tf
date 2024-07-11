@@ -1,6 +1,11 @@
 # 
 # Instance
 #-------------------------------------------------------------------------------
+data aws_instance main {
+	instance_id = aws_ec2_fleet.main.fleet_instance_set[0].instance_ids[0]
+}
+
+
 resource aws_ec2_fleet main {
 	type = "instant"
 	terminate_instances = true
