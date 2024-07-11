@@ -35,9 +35,32 @@ resource aws_launch_template main {
 	name = var.prefix
 	update_default_version = true
 	
+	# Configuration.
+	instance_type = var.instance_type
+	# instance_requirements {
+	# 	allowed_instance_types = data.aws_ec2_instance_types.main.instance_types
+	# 	burstable_performance = "included"
+	# 	vcpu_count { min = var.min_vcpu_count }
+	# 	memory_mib { min = var.min_memory_gib * 1024 }
+	# }
 	image_id = data.aws_ami.main.id
+	user_data = var.user_data_base64
+	# iam_instance_profile { arn = aws_iam_instance_profile.main.arn }
 	
-	instance_type = "t3.micro"
+	# Network.
+	vpc_security_group_ids = var.security_group_ids
+	# source_dest_check = var.source_dest_check
+	
+	# Storage.
+	block_device_mappings {
+		device_name = "/dev/xvda"
+		
+		ebs {
+			volume_size = var.root_volume_size
+			encrypted = true
+		}
+	}
+	ebs_optimized = true
 	
 	dynamic tag_specifications {
 		for_each = {
