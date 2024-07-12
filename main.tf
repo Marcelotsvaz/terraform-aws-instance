@@ -31,6 +31,7 @@ resource aws_ec2_fleet main {
 		replace_triggered_by = [
 			aws_launch_template.main.id,
 			aws_launch_template.main.default_version,
+			aws_iam_role.main.inline_policy,
 		]
 	}
 }
@@ -50,7 +51,7 @@ resource aws_launch_template main {
 	# }
 	image_id = data.aws_ami.main.id
 	user_data = var.user_data_base64
-	# iam_instance_profile { arn = aws_iam_instance_profile.main.arn }
+	iam_instance_profile { arn = aws_iam_instance_profile.main.arn }
 	
 	# Network.
 	vpc_security_group_ids = var.security_group_ids
@@ -111,5 +112,51 @@ data aws_ami main {
 	filter {
 		name = "architecture"
 		values = [ "x86_64" ]
+	}
+}
+
+
+
+# 
+# Instance Profile
+#-------------------------------------------------------------------------------
+resource aws_iam_instance_profile main {
+	name = var.prefix
+	role = aws_iam_role.main.name
+	
+	tags = {
+		Name = "${var.name} Instance Profile"
+	}
+}
+
+
+resource aws_iam_role main {
+	name = var.prefix
+	assume_role_policy = data.aws_iam_policy_document.assume_role.json
+	managed_policy_arns = []
+	
+	dynamic inline_policy {
+		for_each = var.role_policies
+		
+		content {
+			name = inline_policy.value.policy_id
+			policy = inline_policy.value.json
+		}
+	}
+	
+	tags = {
+		Name = "${var.name} Role"
+	}
+}
+
+
+data aws_iam_policy_document assume_role {
+	statement {
+		sid = "ec2AssumeRole"
+		principals {
+			type = "Service"
+			identifiers = [ "ec2.amazonaws.com" ]
+		}
+		actions = [ "sts:AssumeRole" ]
 	}
 }

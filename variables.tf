@@ -52,6 +52,18 @@ variable user_data_base64 {
 }
 
 
+variable role_policies {
+	description = "Policy for the IAM instance profile."
+	type = set(
+		object( {
+			policy_id = optional( string, "main" )
+			json = string
+		} )
+	)
+	default = []
+}
+
+
 
 # 
 # Network
