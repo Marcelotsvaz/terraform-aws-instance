@@ -68,7 +68,7 @@ resource aws_launch_template main {
 	# 	vcpu_count { min = var.min_vcpu_count }
 	# 	memory_mib { min = var.min_memory_gib * 1024 }
 	# }
-	image_id = data.aws_ami.main.id
+	image_id = coalesce( var.ami_id, data.aws_ami.main.id )
 	user_data = var.user_data_base64
 	iam_instance_profile { arn = aws_iam_instance_profile.main.arn }
 	
