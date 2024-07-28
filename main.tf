@@ -41,6 +41,11 @@ resource aws_ec2_fleet main {
 			aws_launch_template.main.default_version,
 			aws_iam_role.main.inline_policy,
 		]
+		
+		postcondition {
+			condition = length( self.fleet_instance_set ) == 1
+			error_message = "Fleet not fulfilled."
+		}
 	}
 }
 
