@@ -36,17 +36,23 @@ resource aws_ec2_fleet main {
 	}
 	
 	lifecycle {
-		replace_triggered_by = [
-			aws_launch_template.main.id,
-			aws_launch_template.main.default_version,
-			aws_iam_role.main.inline_policy,
-		]
+		replace_triggered_by = [ terraform_data.fleet_replacement ]
 		
 		postcondition {
 			condition = length( self.fleet_instance_set ) == 1
 			error_message = "Fleet not fulfilled."
 		}
 	}
+}
+
+
+resource terraform_data fleet_replacement {
+	triggers_replace = [
+		aws_launch_template.main.id,
+		aws_launch_template.main.default_version,
+		aws_iam_role.main.inline_policy,
+		var.subnet_ids,
+	]
 }
 
 
