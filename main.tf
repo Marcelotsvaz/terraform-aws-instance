@@ -21,6 +21,14 @@ resource aws_ec2_fleet main {
 			launch_template_id = aws_launch_template.main.id
 			version = aws_launch_template.main.default_version
 		}
+		
+		dynamic override {
+			for_each = var.subnet_ids
+			
+			content {
+				subnet_id = override.value
+			}
+		}
 	}
 	
 	tags = {
