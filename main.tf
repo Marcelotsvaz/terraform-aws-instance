@@ -12,8 +12,8 @@ resource aws_ec2_fleet main {
 	
 	target_capacity_specification {
 		default_target_capacity_type = "spot"
-		spot_target_capacity = 1
 		total_target_capacity = 1
+		spot_target_capacity = 1
 	}
 	
 	launch_template_config {
@@ -60,7 +60,7 @@ resource aws_launch_template main {
 	name = var.prefix
 	update_default_version = true
 	
-	# Configuration.
+	# Instance requirements.
 	instance_type = var.instance_type
 	# instance_requirements {
 	# 	allowed_instance_types = data.aws_ec2_instance_types.main.instance_types
@@ -68,6 +68,13 @@ resource aws_launch_template main {
 	# 	vcpu_count { min = var.min_vcpu_count }
 	# 	memory_mib { min = var.min_memory_gib * 1024 }
 	# }
+	instance_market_options {
+		spot_options {
+			max_price = var.max_instance_price
+		}
+	}
+	
+	# Configuration.
 	image_id = coalesce( var.ami_id, data.aws_ami.main.id )
 	user_data = var.user_data_base64
 	iam_instance_profile { arn = aws_iam_instance_profile.main.arn }

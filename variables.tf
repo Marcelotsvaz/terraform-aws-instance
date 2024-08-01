@@ -17,7 +17,6 @@ variable prefix {
 }
 
 
-
 # 
 # Configuration
 #-------------------------------------------------------------------------------
@@ -39,6 +38,12 @@ variable min_memory_gib {
 	default = null
 }
 
+variable max_instance_price {
+	description = "Maximum spot instance price."
+	type = number
+	default = null
+}
+
 variable ami_id {
 	description = "AMI ID."
 	type = string
@@ -51,7 +56,6 @@ variable user_data_base64 {
 	default = null
 }
 
-
 variable role_policies {
 	description = "Policy for the IAM instance profile."
 	type = set(
@@ -62,7 +66,6 @@ variable role_policies {
 	)
 	default = []
 }
-
 
 
 # 
@@ -85,7 +88,6 @@ variable source_dest_check {
 	type = bool
 	default = true
 }
-
 
 
 # 
