@@ -40,6 +40,8 @@ resource aws_ec2_fleet main {
 	}
 	
 	lifecycle {
+		ignore_changes = [ spot_options[0].instance_pools_to_use_count ]
+		
 		replace_triggered_by = [ terraform_data.fleet_replacement ]
 		
 		postcondition {
@@ -74,7 +76,9 @@ resource aws_launch_template main {
 	# }
 	instance_market_options {
 		spot_options {
+			# spot_options drifts when max_price is null and is the only parameter in the block.
 			max_price = var.max_instance_price
+			instance_interruption_behavior = "terminate"
 		}
 	}
 	
