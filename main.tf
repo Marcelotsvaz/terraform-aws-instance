@@ -16,6 +16,10 @@ resource aws_ec2_fleet main {
 		spot_target_capacity = 1
 	}
 	
+	spot_options {
+		allocation_strategy = "price-capacity-optimized"
+	}
+	
 	launch_template_config {
 		launch_template_specification {
 			launch_template_id = aws_launch_template.main.id
