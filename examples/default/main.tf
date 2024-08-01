@@ -4,6 +4,8 @@ module instance {
 	name = "Instance"
 	prefix = "${local.project_prefix}-instance"
 	
+	instance_type = "t3a.small"
+	
 	role_policies = [ data.aws_iam_policy_document.main ]
 }
 
